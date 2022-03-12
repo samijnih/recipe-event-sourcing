@@ -9,9 +9,6 @@ services:
             - '9001:9000'
         environment:
             APP_ENV: test
-        env_file:
-            - .env
-            - .env.test
         volumes:
             - ./:/var/www/html/
 

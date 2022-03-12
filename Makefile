@@ -112,8 +112,8 @@ composer-update:
 stop-test:
 	$(DCTEST) rm -f -s -v
 
-## up-test			: Build and up all test containers
-up-test: stop-test
+## start-test			: Build and up all test containers
+start-test: stop-test
 	$(DCTEST) up --quiet-pull --force-recreate --build -d
 
 ## composer-install-test		: Install all composer dependencies
@@ -160,10 +160,10 @@ clean-html-test-file:
 ##
 
 ## test				: Run all test suites
-test: up-test composer-install-test wait-test-database unit-test integration-test functional-test
+test: start-test composer-install-test wait-test-database unit-test integration-test functional-test
 
 ## test-ci			: Test instructions for CI only
-test-ci: env up-test composer-install-test wait-test-database test-suite-ci stop-test
+test-ci: env start-test composer-install-test wait-test-database test-suite-ci stop-test
 
 ## phpcs				: Run PHPCS Fixer
 phpcs:
