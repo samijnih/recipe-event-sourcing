@@ -1,0 +1,19 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Recipe\Domain\UseCase\Recipe\Create\HandleCreateARecipe:
+        tags: [ 'messenger.message_handler' ]
+
+    Recipe\Domain\Model\Recipe\RecipeRepository:
+        factory: [ '@Recipe\Infrastructure\Persistence\Repository\RepositoryFactory', 'createRecipeRepository' ]
+        arguments:
+            $tableName: 'recipe'
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
