@@ -23,8 +23,7 @@ services:
         ports:
             - '5432:5432'
         volumes:
-            - ./infra/docker/postgres/:/docker-entrypoint-initdb.d/
-            - ./infra/postgres/:/home
+            - ./infra/docker/postgres/:/home
 
     aws:
         build:
@@ -46,4 +45,3 @@ services:
             DOCKER_CMD: docker
         ports:
             - '4566:4566'
-

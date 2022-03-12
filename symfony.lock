@@ -5,6 +5,12 @@
     "async-aws/sqs": {
         "version": "1.7.0"
     },
+    "beberlei/assert": {
+        "version": "v3.3.2"
+    },
+    "brick/math": {
+        "version": "0.9.3"
+    },
     "composer/pcre": {
         "version": "3.0.0"
     },
@@ -13,6 +19,18 @@
     },
     "composer/xdebug-handler": {
         "version": "3.0.3"
+    },
+    "dama/doctrine-test-bundle": {
+        "version": "6.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        },
+        "files": [
+            "config/packages/test/dama_doctrine_test_bundle.yaml"
+        ]
     },
     "doctrine/annotations": {
         "version": "1.13",
@@ -91,6 +109,24 @@
     },
     "egulias/email-validator": {
         "version": "3.1.2"
+    },
+    "eventsauce/clock": {
+        "version": "1.0.0"
+    },
+    "eventsauce/eventsauce": {
+        "version": "1.4.1"
+    },
+    "eventsauce/message-repository-for-doctrine": {
+        "version": "0.2.1"
+    },
+    "eventsauce/message-repository-table-schema": {
+        "version": "0.2.1"
+    },
+    "eventsauce/test-utilities": {
+        "version": "1.4.0"
+    },
+    "eventsauce/uuid-encoding": {
+        "version": "0.2.1"
     },
     "friendsofphp/php-cs-fixer": {
         "version": "3.7",
@@ -186,6 +222,12 @@
     },
     "psr/log": {
         "version": "3.0.0"
+    },
+    "ramsey/collection": {
+        "version": "1.2.2"
+    },
+    "ramsey/uuid": {
+        "version": "4.2.3"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"

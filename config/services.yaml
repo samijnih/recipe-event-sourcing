@@ -1,6 +1,30 @@
-parameters:
+imports:
+    - { resource: domain.yaml }
 
 services:
     _defaults:
         autowire: true
         autoconfigure: true
+
+    Recipe\Infrastructure\Bus\MessengerCommandBus: ~
+    Recipe\Domain\Bus\CommandBus: '@Recipe\Infrastructure\Bus\MessengerCommandBus'
+
+    Recipe\Infrastructure\Persistence\Repository\RepositoryFactory: ~
+
+    Ramsey\Uuid\UuidFactory: ~
+    Ramsey\Uuid\UuidFactoryInterface: '@Ramsey\Uuid\UuidFactory'
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+
+        Recipe\Domain\Bus\CommandBus:
+            alias: Recipe\Infrastructure\Bus\MessengerCommandBus
+            public: true
+
+        Ramsey\Uuid\UuidFactoryInterface:
+            alias: Ramsey\Uuid\UuidFactory
+            public: true
