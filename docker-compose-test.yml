@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+    php_test:
+        image: everytimeicob/php:8.1-fpm
+        container_name: php_test
+        restart: 'no'
+        ports:
+            - '9001:9000'
+        environment:
+            APP_ENV: test
+        env_file:
+            - .env
+            - .env.test
+        volumes:
+            - ./:/var/www/html/
+
+    postgres_test:
+        image: postgres:14-alpine
+        container_name: postgres_test
+        restart: 'no'
+        environment:
+            POSTGRES_DB: recipe
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        expose:
+            - 5431
+        ports:
+            - '5431:5432'
+        volumes:
+            - ./infra/docker/postgres/:/docker-entrypoint-initdb.d/
+            - ./infra/postgres/:/home
