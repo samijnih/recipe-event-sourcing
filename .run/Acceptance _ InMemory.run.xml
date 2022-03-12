@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Acceptance | InMemory" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" singleton="false">
+    <CommandLine>
+      <PhpTestInterpreterSettings>
+        <option name="interpreterName" value="php_test" />
+      </PhpTestInterpreterSettings>
+    </CommandLine>
+    <TestRunner class="Recipe\Tests\Acceptance\InMemory\Recipe\Scenario\CreateARecipeTest" configuration_file="/var/www/html/phpunit.xml.dist" directory="$PROJECT_DIR$/tests/Acceptance/InMemory" file="$PROJECT_DIR$/tests/Acceptance/InMemory/Recipe/Scenario/CreateARecipeTest.php" />
+    <method v="2" />
+  </configuration>
+</component>

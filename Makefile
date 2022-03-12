@@ -2,6 +2,7 @@ DC=docker-compose -f docker-compose.yml
 DCTEST=docker-compose -f docker-compose-test.yml
 EXEC=$(DC) exec
 EXEC_TEST=$(DCTEST) exec
+EXEC_PHP_TEST=$(EXEC_TEST) php_test
 
 .DEFAULT_GOAL := help
 .PHONY: help
@@ -9,7 +10,7 @@ EXEC_TEST=$(DCTEST) exec
 help:
 .PHONY : help
 help : Makefile
-	@sed -n 's/^##//p' $<
+	sed -n 's/^##//p' $<
 
 ##
 ## ---- Install ----
@@ -33,7 +34,7 @@ clean:
 ##
 
 ## start				: Start local development
-start: up wait-database
+start: up wait-database wait-aws run-migration
 
 ## pull				: Pull all images
 pull:
@@ -63,8 +64,8 @@ up-database:
 
 ## wait-database			: Wait for database connection
 wait-database:
-	./bin/dockerize -wait tcp://0.0.0.0:5440
-	until $(DC) exec postgres sh /home/health.sh recipe postgres; \
+	./bin/dockerize -wait tcp://localhost:5432
+	until $(DC) exec postgres sh /home/ping.sh; \
 	do \
   		echo 'Database not created yet, sleeping 5 seconds.'; \
   		sleep 5; \
@@ -73,7 +74,7 @@ wait-database:
 
 ## wait-aws			: Wait for aws connection
 wait-aws:
-	./bin/dockerize -wait tcp://0.0.0.0:4566
+	./bin/dockerize -wait tcp://localhost:4566
 
 ## ps				: Docker ps local containers
 ps:
@@ -98,11 +99,18 @@ pgsql:
 ## composer-install		: Install all composer dependencies
 composer-install:
 	$(EXEC) php composer install
-	$(EXEC) php composer dev
+
+## composer-dumpautoload		: Dump autoload
+composer-dumpautoload:
+	$(EXEC) php composer dumpautoload
 
 ## composer-update		: Update all composer dependencies
 composer-update:
 	$(EXEC) php composer update
+
+## run-migration			: Run migrations
+run-migration:
+	$(EXEC) php bin/console d:m:m -n
 
 ##
 ## ---- Tests ----
@@ -113,8 +121,15 @@ stop-test:
 	$(DCTEST) rm -f -s -v
 
 ## start-test			: Build and up all test containers
-start-test: stop-test
+start-test: stop-test up-test wait-test-database load-test-migrations wait-test-aws
+
+## up-test			: Up all the test containers
+up-test:
 	$(DCTEST) up --quiet-pull --force-recreate --build -d
+
+## load-test-migrations		: Load the doctrine migrations inside the php test container
+load-test-migrations:
+	$(EXEC_PHP_TEST) bin/console d:m:m -n
 
 ## composer-install-test		: Install all composer dependencies
 composer-install-test:
@@ -127,8 +142,8 @@ up-database-test:
 
 ## wait-test-database		: Wait for database connection
 wait-test-database:
-	./bin/dockerize -wait tcp://0.0.0.0:5441
-	until $(DCTEST) exec -T postgres_test sh /home/health.sh recipe postgres; \
+	./bin/dockerize -wait tcp://localhost:5431
+	until $(DCTEST) exec -T postgres_test sh /home/ping.sh; \
 	do \
   		echo 'Test database not created yet, sleeping 5 seconds.'; \
   		sleep 5; \
@@ -137,7 +152,7 @@ wait-test-database:
 
 ## wait-test-aws			: Wait for aws connection
 wait-test-aws:
-	./bin/dockerize -wait tcp://0.0.0.0:4567
+	./bin/dockerize -wait tcp://localhost:4567
 
 ## bash-test			: Enter into php container
 bash-test:
@@ -151,6 +166,10 @@ pgsql-test:
 ps-test:
 	$(DCTEST) ps
 
+## run-migration-test		: Run migrations
+run-migration-test:
+	$(EXEC_TEST) php_test bin/console d:m:m -n
+
 ## clean-html-test-file		: Remove all .html error file in tests
 clean-html-test-file:
 	find ./tests -type f -name '*TestError.html' -print -delete
@@ -160,10 +179,10 @@ clean-html-test-file:
 ##
 
 ## test				: Run all test suites
-test: start-test composer-install-test wait-test-database unit-test integration-test functional-test
+test: start-test composer-install-test wait-test-database wait-test-aws unit-test integration-test functional-test
 
 ## test-ci			: Test instructions for CI only
-test-ci: env start-test composer-install-test wait-test-database test-suite-ci stop-test
+test-ci: env start-test composer-install-test wait-test-database wait-test-aws test-suite-ci stop-test
 
 ## phpcs				: Run PHPCS Fixer
 phpcs:
@@ -178,6 +197,10 @@ test-suite-ci:
 unit-test:
 	$(EXEC_TEST) php_test vendor/bin/phpunit --stop-on-failure --group=unit
 
+## in-memory-test			: Run in-memory testing
+in-memory-test:
+	$(EXEC_TEST) php_test vendor/bin/phpunit --stop-on-failure --group=in-memory
+
 ## integration-test 		: Run integration testing
 integration-test:
 	$(EXEC_TEST) php_test vendor/bin/phpunit --stop-on-failure --group=integration
@@ -185,6 +208,10 @@ integration-test:
 ## functional-test		: Run functional testing
 functional-test:
 	$(EXEC_TEST) php_test vendor/bin/phpunit --stop-on-failure --group=functional
+
+## acceptance-test		: Run functional testing
+acceptance-test:
+	$(EXEC_TEST) php_test vendor/bin/phpunit --stop-on-failure --group=acceptance
 
 ##
 ## ---- Logs ----
