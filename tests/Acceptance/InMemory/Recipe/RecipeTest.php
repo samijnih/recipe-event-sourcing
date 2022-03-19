@@ -16,6 +16,8 @@ use Recipe\Domain\Bus\Command;
 use Recipe\Domain\Model\Recipe\Recipe;
 use Recipe\Domain\Model\Recipe\RecipeRepository;
 use Recipe\Domain\Model\Recipe\RecipeUuid;
+use Recipe\Domain\UseCase\Recipe\Create\CreateARecipe;
+use Recipe\Domain\UseCase\Recipe\Create\HandleCreateARecipe;
 use Recipe\Infrastructure\Persistence\Repository\DbalRecipeRepository;
 use Recipe\Tests\Domain\Bus\InMemoryCommandBus;
 
@@ -43,7 +45,7 @@ abstract class RecipeTest extends AggregateRootTestCase
     {
         $this->uuidFactory = $this->createMock(UuidFactoryInterface::class);
         $this->messageBus = new InMemoryCommandBus([
-            \Recipe\Domain\UseCase\Recipe\Create\CreateARecipe::class => new \Recipe\Domain\UseCase\Recipe\Create\HandleCreateARecipe(
+            CreateARecipe::class => new HandleCreateARecipe(
                 $this->repository,
                 $this->uuidFactory,
             ),

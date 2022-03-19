@@ -17,7 +17,7 @@ final class Recipe implements AggregateRoot
     public static function create(RecipeId $id, string $name): self
     {
         $recipe = new self($id);
-        $recipe->recordThat(new RecipeCreated($name));
+        $recipe->recordThat(new RecipeCreated($id->toString(), $name));
 
         return $recipe;
     }
