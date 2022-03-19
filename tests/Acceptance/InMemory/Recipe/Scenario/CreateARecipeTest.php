@@ -28,7 +28,7 @@ final class CreateARecipeTest extends RecipeTest
 
         $this
             ->when($command)
-            ->then(new RecipeCreated('Saumon au four'))
+            ->then(new RecipeCreated($this->aggregateRootId()->toString(), 'Saumon au four'))
         ;
     }
 }

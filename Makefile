@@ -64,7 +64,7 @@ up-database:
 
 ## wait-database			: Wait for database connection
 wait-database:
-	./bin/dockerize -wait tcp://localhost:5432
+	./bin/dockerize -wait tcp://postgres:5432
 	until $(DC) exec postgres sh /home/ping.sh; \
 	do \
   		echo 'Database not created yet, sleeping 5 seconds.'; \
@@ -74,7 +74,7 @@ wait-database:
 
 ## wait-aws			: Wait for aws connection
 wait-aws:
-	./bin/dockerize -wait tcp://localhost:4566
+	./bin/dockerize -wait tcp://aws:4566
 
 ## ps				: Docker ps local containers
 ps:
@@ -121,7 +121,7 @@ stop-test:
 	$(DCTEST) rm -f -s -v
 
 ## start-test			: Build and up all test containers
-start-test: stop-test up-test wait-test-database load-test-migrations wait-test-aws
+start-test: stop-test up-test wait-test-database load-test-migrations load-fixtures wait-test-aws
 
 ## up-test			: Up all the test containers
 up-test:
@@ -130,6 +130,10 @@ up-test:
 ## load-test-migrations		: Load the doctrine migrations inside the php test container
 load-test-migrations:
 	$(EXEC_PHP_TEST) bin/console d:m:m -n
+
+## load-fixtures			: Load the doctrine fixtures
+load-fixtures:
+	$(EXEC_PHP_TEST) bin/console doctrine:fixtures:load -n
 
 ## composer-install-test		: Install all composer dependencies
 composer-install-test:
@@ -142,7 +146,7 @@ up-database-test:
 
 ## wait-test-database		: Wait for database connection
 wait-test-database:
-	./bin/dockerize -wait tcp://localhost:5431
+	./bin/dockerize -wait tcp://postgres_test:5431
 	until $(DCTEST) exec -T postgres_test sh /home/ping.sh; \
 	do \
   		echo 'Test database not created yet, sleeping 5 seconds.'; \
@@ -152,7 +156,7 @@ wait-test-database:
 
 ## wait-test-aws			: Wait for aws connection
 wait-test-aws:
-	./bin/dockerize -wait tcp://localhost:4567
+	./bin/dockerize -wait tcp://aws_test:4567
 
 ## bash-test			: Enter into php container
 bash-test:
@@ -179,7 +183,10 @@ clean-html-test-file:
 ##
 
 ## test				: Run all test suites
-test: start-test composer-install-test wait-test-database wait-test-aws unit-test integration-test functional-test
+test: start-test composer-install-test wait-test-database wait-test-aws test-suite
+
+## test-suite		: Run all test suites
+test-suite: unit-test acceptance-test integration-test in-memory-test functional-test
 
 ## phpcs				: Run PHPCS Fixer
 phpcs:

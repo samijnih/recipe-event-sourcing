@@ -15,7 +15,9 @@ services:
     EventSauce\EventSourcing\DotSeparatedSnakeCaseInflector: ~
     EventSauce\EventSourcing\ClassNameInflector: '@EventSauce\EventSourcing\DotSeparatedSnakeCaseInflector'
 
-    EventSauce\EventSourcing\SynchronousMessageDispatcher: ~
+    EventSauce\EventSourcing\SynchronousMessageDispatcher:
+        arguments:
+            - '@Recipe\Domain\Listener\Recipe\RecipeCreatedListener'
 
     EventSauce\EventSourcing\DefaultHeadersDecorator: ~
     EventSauce\EventSourcing\MessageDecoratorChain:

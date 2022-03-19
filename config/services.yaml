@@ -7,9 +7,13 @@ services:
         autoconfigure: true
 
     Recipe\Infrastructure\Bus\MessengerCommandBus: ~
-    Recipe\Domain\Bus\CommandBus: '@Recipe\Infrastructure\Bus\MessengerCommandBus'
+
+    Recipe\Infrastructure\Fixture\RecipeFixtures: ~
 
     Recipe\Infrastructure\Persistence\Repository\RepositoryFactory: ~
+    Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector: ~
+
+    Recipe\Infrastructure\Query\DbalRecipeReadModelRepository: ~
 
     Ramsey\Uuid\UuidFactory: ~
     Ramsey\Uuid\UuidFactoryInterface: '@Ramsey\Uuid\UuidFactory'
@@ -23,8 +27,8 @@ when@test:
 
         Recipe\Domain\Bus\CommandBus:
             alias: Recipe\Infrastructure\Bus\MessengerCommandBus
-            public: true
 
         Ramsey\Uuid\UuidFactoryInterface:
             alias: Ramsey\Uuid\UuidFactory
-            public: true
+
+        Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector: ~
