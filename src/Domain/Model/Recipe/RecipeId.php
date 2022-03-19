@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Recipe\Domain\Model\Recipe;
 
-interface RecipeId
+use EventSauce\EventSourcing\AggregateRootId;
+
+interface RecipeId extends AggregateRootId
 {
 }

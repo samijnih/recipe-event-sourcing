@@ -2,6 +2,13 @@ framework:
     messenger:
         failure_transport: failed
 
+        buses:
+            command.bus:
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
+
         transports:
             async:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'

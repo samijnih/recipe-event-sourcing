@@ -11,13 +11,13 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class MessengerCommandBus implements CommandBus
 {
-    public function __construct(private readonly MessageBusInterface $messageBus)
+    public function __construct(private readonly MessageBusInterface $commandBus)
     {
     }
 
     public function dispatch(Command $command): void
     {
-        $this->messageBus->dispatch(
+        $this->commandBus->dispatch(
             Envelope::wrap($command),
         );
     }

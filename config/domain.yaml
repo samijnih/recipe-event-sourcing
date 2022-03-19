@@ -3,13 +3,21 @@ services:
         autowire: true
         autoconfigure: true
 
-    Recipe\Domain\UseCase\Recipe\Create\HandleCreateARecipe:
-        tags: [ 'messenger.message_handler' ]
+    Recipe\Domain\Bus\CommandBus: '@Recipe\Infrastructure\Bus\MessengerCommandBus'
+
+    Recipe\Domain\Listener\Recipe\RecipeCreatedListener: ~
 
     Recipe\Domain\Model\Recipe\RecipeRepository:
         factory: [ '@Recipe\Infrastructure\Persistence\Repository\RepositoryFactory', 'createRecipeRepository' ]
         arguments:
             $tableName: 'recipe'
+
+    Recipe\Domain\ReadModel\Repository\RecipeReadModelRepository: '@Recipe\Infrastructure\Query\DbalRecipeReadModelRepository'
+    Recipe\Domain\ReadModel\Projection\Recipe\GetARecipeProjector: '@Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector'
+
+    Recipe\Domain\UseCase\Recipe\Get\GetARecipeService: ~
+    Recipe\Domain\UseCase\Recipe\Create\HandleCreateARecipe:
+        tags: [ 'messenger.message_handler' ]
 
 when@test:
     services:
@@ -17,3 +25,5 @@ when@test:
             autowire: true
             autoconfigure: true
             public: true
+
+        Recipe\Domain\UseCase\Recipe\Get\GetARecipeService: ~
