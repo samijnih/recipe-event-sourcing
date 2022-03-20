@@ -181,17 +181,17 @@ clean-html-test-file:
 ## test				: Run all test suites
 test: start-test composer-install-test wait-test-database wait-test-aws unit-test integration-test functional-test
 
-## test-ci			: Test instructions for CI only
-test-ci: env start-test composer-install-test wait-test-database wait-test-aws test-suite-ci stop-test
-
 ## phpcs				: Run PHPCS Fixer
 phpcs:
 	$(EXEC) php vendor/bin/php-cs-fixer fix -v --allow-risky=yes --using-cache=no
 
+## phpcs-ci			: Run phpcs into CI mode
+phpcs-ci:
+	$(EXEC_TEST) -T php_test vendor/bin/php-cs-fixer fix -n --allow-risky=yes --using-cache=no
+
 ## test-suite-ci			: Run all test suites for CI
 test-suite-ci:
 	$(EXEC_TEST) -T php_test vendor/bin/phpunit -vvv --no-logging -disallow-test-output --stderr --testdox --do-not-cache-result --no-coverage
-	$(EXEC_TEST) -T php_test vendor/bin/php-cs-fixer fix -n --allow-risky=yes --using-cache=no
 
 ## unit-test			: Run unit testing
 unit-test:
