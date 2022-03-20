@@ -17,8 +17,23 @@ jobs:
         steps:
             -   uses: actions/checkout@v2
 
-            -   name: Run all tests
-                run: make test-ci
+            -   name: Start test containers
+                run: make up-test
+
+            -   name: Install php dependencies
+                run: make composer-install-test
+
+            -   name: Wait for the external network dependencies
+                run: make wait-test-database wait-test-aws
+
+            -   name: Run test migrations
+                run: make load-test-migrations
+
+            -   name: Run test suite
+                run: make test-suite-ci
 
             -   name: Run php cs fixer
                 run: make phpcs-ci
+
+            -   name: Stop test containers
+                run: make stop-test
