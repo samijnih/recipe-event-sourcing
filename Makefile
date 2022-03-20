@@ -2,7 +2,7 @@ DC=docker-compose -f docker-compose.yml
 DCTEST=docker-compose -f docker-compose-test.yml
 EXEC=$(DC) exec
 EXEC_TEST=$(DCTEST) exec
-EXEC_PHP_TEST=$(EXEC_TEST) php_test
+EXEC_PHP_TEST=$(EXEC_TEST) -T php_test
 
 .DEFAULT_GOAL := help
 .PHONY: help
