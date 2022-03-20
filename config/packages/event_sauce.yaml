@@ -19,6 +19,8 @@ services:
         arguments:
             - '@Recipe\Domain\Listener\Recipe\RecipeCreatedListener'
 
+    EventSauce\EventSourcing\MessageDecorator: '@EventSauce\EventSourcing\MessageDecoratorChain'
+
     EventSauce\EventSourcing\DefaultHeadersDecorator: ~
     EventSauce\EventSourcing\MessageDecoratorChain:
         arguments:
@@ -35,6 +37,11 @@ services:
 
     EventSauce\EventSourcing\MessageDispatcher: '@EventSauce\EventSourcing\MessageDispatcherChain'
 
+    EventSauce\MessageOutbox\OutboxRelay:
+        arguments:
+            - '@Recipe\Infrastructure\Persistence\Repository\DbalOutboxRepository'
+            - '@Recipe\Domain\Consumer\DispatchConsumedMessages'
+
 when@test:
     services:
         _defaults:
@@ -44,3 +51,7 @@ when@test:
 
         EventSauce\Clock\TestClock: ~
         EventSauce\Clock\Clock: '@EventSauce\Clock\TestClock'
+        EventSauce\MessageOutbox\OutboxRelay:
+            arguments:
+                - '@Recipe\Infrastructure\Persistence\Repository\DbalOutboxRepository'
+                - '@Recipe\Domain\Consumer\DispatchConsumedMessages'

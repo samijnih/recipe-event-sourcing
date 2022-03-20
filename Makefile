@@ -185,7 +185,7 @@ clean-html-test-file:
 ## test				: Run all test suites
 test: start-test composer-install-test wait-test-database wait-test-aws test-suite
 
-## test-suite		: Run all test suites
+## test-suite			: Run all test suites
 test-suite: unit-test acceptance-test integration-test in-memory-test functional-test
 
 ## phpcs				: Run PHPCS Fixer

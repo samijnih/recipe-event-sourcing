@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Recipe\Tests\Acceptance\Integration\Recipe\Scenario;
 
+use EventSauce\MessageOutbox\OutboxRelay;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactoryInterface;
@@ -23,12 +24,14 @@ final class RecipeScenario extends KernelTestCase
 {
     private MessengerCommandBus $commandBus;
     private GetARecipeService $getARecipeService;
+    private OutboxRelay $outboxRelay;
     private MockObject|UuidFactoryInterface $uuidFactory;
 
     protected function setUp(): void
     {
         $this->commandBus = self::getContainer()->get(CommandBus::class);
         $this->getARecipeService = self::getContainer()->get(GetARecipeService::class);
+        $this->outboxRelay = self::getContainer()->get(OutboxRelay::class);
         $this->uuidFactory = $this->createMock(UuidFactoryInterface::class);
 
         self::getContainer()->set(UuidFactoryInterface::class, $this->uuidFactory);
@@ -44,6 +47,8 @@ final class RecipeScenario extends KernelTestCase
         $this->commandBus->dispatch(
             new CreateARecipe('Orange and Cocoa Tart'),
         );
+
+        $this->outboxRelay->publishBatch(10, 1);
 
         $actual = $this->getARecipeService->__invoke('b2bdafb9-0a0b-47bf-978d-f1a2f8ad0974');
 

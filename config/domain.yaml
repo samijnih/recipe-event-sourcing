@@ -10,7 +10,10 @@ services:
     Recipe\Domain\Model\Recipe\RecipeRepository:
         factory: [ '@Recipe\Infrastructure\Persistence\Repository\RepositoryFactory', 'createRecipeRepository' ]
         arguments:
-            $tableName: 'recipe'
+            $aggregateTableName: 'recipe'
+            $outboxTableName: '%outbox_table_name%'
+
+    Recipe\Domain\Consumer\DispatchConsumedMessages: ~
 
     Recipe\Domain\ReadModel\Repository\RecipeReadModelRepository: '@Recipe\Infrastructure\Query\DbalRecipeReadModelRepository'
     Recipe\Domain\ReadModel\Projection\Recipe\GetARecipeProjector: '@Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector'

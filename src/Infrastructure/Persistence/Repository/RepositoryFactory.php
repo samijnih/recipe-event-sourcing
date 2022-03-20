@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Recipe\Infrastructure\Persistence\Repository;
 
 use Doctrine\DBAL\Connection;
-use EventSauce\EventSourcing\MessageDispatcher;
-use EventSauce\EventSourcing\MessageRepository;
+use EventSauce\EventSourcing\ClassNameInflector;
+use EventSauce\EventSourcing\MessageDecorator;
 use EventSauce\EventSourcing\Serialization\MessageSerializer;
+use EventSauce\MessageOutbox\DoctrineOutbox\DoctrineTransactionalMessageRepository;
 use EventSauce\MessageRepository\DoctrineMessageRepository\DoctrineUuidV4MessageRepository;
 use EventSauce\UuidEncoding\StringUuidEncoder;
 use EventSauce\UuidEncoding\UuidEncoder;
@@ -24,30 +25,33 @@ final class RepositoryFactory
     }
 
     public function createRecipeRepository(
-        string $tableName,
+        string $aggregateTableName,
+        string $outboxTableName,
         Connection $connection,
         MessageSerializer $messageSerializer,
-        MessageDispatcher $messageDispatcher,
+        MessageDecorator $messageDecorator,
+        ClassNameInflector $classNameInflector,
     ): RecipeRepository {
         return new DbalRecipeRepository(
             Recipe::class,
-            $this->createMessageRepository($connection, $messageSerializer, $tableName),
-            $messageDispatcher,
-        );
-    }
-
-    private function createMessageRepository(
-        Connection $connection,
-        MessageSerializer $messageSerializer,
-        string $tableName
-    ): MessageRepository {
-        return new DoctrineUuidV4MessageRepository(
-            $connection,
-            $tableName,
-            $messageSerializer,
-            0,
-            null,
-            $this->uuidEncoder,
+            new DoctrineTransactionalMessageRepository(
+                $connection,
+                new DoctrineUuidV4MessageRepository(
+                    $connection,
+                    $aggregateTableName,
+                    $messageSerializer,
+                    0,
+                    null,
+                    $this->uuidEncoder,
+                ),
+                new DbalOutboxRepository(
+                    $connection,
+                    $outboxTableName,
+                    $messageSerializer
+                ),
+            ),
+            $messageDecorator,
+            $classNameInflector,
         );
     }
 }
