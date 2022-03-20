@@ -146,7 +146,7 @@ up-database-test:
 
 ## wait-test-database		: Wait for database connection
 wait-test-database:
-	./bin/dockerize -wait tcp://postgres_test:5431 -timeout 30s
+	./bin/dockerize -wait tcp://localhost:5431 -timeout 30s
 	until $(DCTEST) exec -T postgres_test sh /home/ping.sh; \
 	do \
   		echo 'Test database not created yet, sleeping 5 seconds.'; \
@@ -156,7 +156,7 @@ wait-test-database:
 
 ## wait-test-aws			: Wait for aws connection
 wait-test-aws:
-	./bin/dockerize -wait tcp://aws_test:4567 -timeout 30s
+	./bin/dockerize -wait tcp://localhost:4567 -timeout 30s
 
 ## bash-test			: Enter into php container
 bash-test:
