@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb308ae6755ddcfb3cf0118abf237c72",
+    "content-hash": "7b29c9b07f4a5aad03e572f95610faf1",
     "packages": [
         {
             "name": "async-aws/core",
@@ -1684,6 +1684,61 @@
             "time": "2021-10-11T09:18:27+00:00"
         },
         {
+            "name": "eventsauce/backoff",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/EventSaucePHP/BackOff.git",
+                "reference": "5620f448fe1bc959367213e6164c8c570eda7f2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/EventSaucePHP/BackOff/zipball/5620f448fe1bc959367213e6164c8c570eda7f2e",
+                "reference": "5620f448fe1bc959367213e6164c8c570eda7f2e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EventSauce\\BackOff\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Back-off strategy interface",
+            "keywords": [
+                "back-off",
+                "backoff",
+                "exponential",
+                "retry"
+            ],
+            "support": {
+                "issues": "https://github.com/EventSaucePHP/BackOff/issues",
+                "source": "https://github.com/EventSaucePHP/BackOff/tree/1.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-04-18T17:02:41+00:00"
+        },
+        {
             "name": "eventsauce/clock",
             "version": "1.0.0",
             "source": {
@@ -1803,6 +1858,104 @@
                 }
             ],
             "time": "2022-02-25T07:42:36+00:00"
+        },
+        {
+            "name": "eventsauce/message-outbox",
+            "version": "0.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/EventSaucePHP/MessageOutbox.git",
+                "reference": "d82d24635ed05a7e601c073dd70e1a1e02547289"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/EventSaucePHP/MessageOutbox/zipball/d82d24635ed05a7e601c073dd70e1a1e02547289",
+                "reference": "d82d24635ed05a7e601c073dd70e1a1e02547289",
+                "shasum": ""
+            },
+            "require": {
+                "eventsauce/backoff": "^1.0",
+                "eventsauce/eventsauce": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EventSauce\\MessageOutbox\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Message Outbox foundation for EventSauce",
+            "support": {
+                "source": "https://github.com/EventSaucePHP/MessageOutbox/tree/0.1.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-06-10T19:39:42+00:00"
+        },
+        {
+            "name": "eventsauce/message-outbox-for-doctrine",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/EventSaucePHP/MessageOutboxForDoctrine.git",
+                "reference": "e7fb3662356ddabb1dae4f0a55a0b659b726a008"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/EventSaucePHP/MessageOutboxForDoctrine/zipball/e7fb3662356ddabb1dae4f0a55a0b659b726a008",
+                "reference": "e7fb3662356ddabb1dae4f0a55a0b659b726a008",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^3.1",
+                "eventsauce/eventsauce": "^1.0||^2.0",
+                "eventsauce/message-outbox": "^0.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EventSauce\\MessageOutbox\\DoctrineOutbox\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Message Outbox Pattern implementation for Doctrine DBAL 3",
+            "support": {
+                "source": "https://github.com/EventSaucePHP/MessageOutboxForDoctrine/tree/0.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-09-14T20:02:28+00:00"
         },
         {
             "name": "eventsauce/message-repository-for-doctrine",

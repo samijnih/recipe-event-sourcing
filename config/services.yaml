@@ -1,6 +1,9 @@
 imports:
     - { resource: domain.yaml }
 
+parameters:
+    outbox_table_name: 'outbox_messages'
+
 services:
     _defaults:
         autowire: true
@@ -11,6 +14,9 @@ services:
     Recipe\Infrastructure\Fixture\RecipeFixtures: ~
 
     Recipe\Infrastructure\Persistence\Repository\RepositoryFactory: ~
+    Recipe\Infrastructure\Persistence\Repository\DbalOutboxRepository:
+        arguments:
+            $tableName: '%outbox_table_name%'
     Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector: ~
 
     Recipe\Infrastructure\Query\DbalRecipeReadModelRepository: ~
