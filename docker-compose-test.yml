@@ -25,5 +25,25 @@ services:
         ports:
             - '5431:5432'
         volumes:
-            - ./infra/docker/postgres/:/docker-entrypoint-initdb.d/
-            - ./infra/postgres/:/home
+            - ./infra/docker/postgres/:/home
+
+    aws_test:
+        build:
+            context: infra/docker/localstack
+        container_name: aws_test
+        environment:
+            SERVICES: sqs
+            #            EDGE_BIND_HOST: 0.0.0.0
+            #            EDGE_PORT: 4566
+            #            HOSTNAME: localhost
+            #            HOSTNAME_EXTERNAL: localhost
+            #            SQS_PORT_EXTERNAL: 4567
+            USE_LIGHT_IMAGE: 1
+            LS_LOG: info
+            AWS_REGION: eu-central-1
+            AWS_ACCESS_KEY_ID: local
+            AWS_SECRET_ACCESS_KEY: local
+            DOCKER_SOCK: unix:///var/run/docker.sock
+            DOCKER_CMD: docker
+        ports:
+            - '4567:4566'
