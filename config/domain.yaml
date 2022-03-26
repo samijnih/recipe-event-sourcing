@@ -1,0 +1,32 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Recipe\Domain\Bus\CommandBus: '@Recipe\Infrastructure\Bus\MessengerCommandBus'
+
+    Recipe\Domain\Listener\Recipe\RecipeCreatedListener: ~
+
+    Recipe\Domain\Model\Recipe\RecipeRepository:
+        factory: [ '@Recipe\Infrastructure\Persistence\Repository\RepositoryFactory', 'createRecipeRepository' ]
+        arguments:
+            $aggregateTableName: 'recipe'
+            $outboxTableName: '%outbox_table_name%'
+
+    Recipe\Domain\Consumer\DispatchConsumedMessages: ~
+
+    Recipe\Domain\ReadModel\Repository\RecipeReadModelRepository: '@Recipe\Infrastructure\Query\DbalRecipeReadModelRepository'
+    Recipe\Domain\ReadModel\Projection\Recipe\GetARecipeProjector: '@Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector'
+
+    Recipe\Domain\UseCase\Recipe\Get\GetARecipeService: ~
+    Recipe\Domain\UseCase\Recipe\Create\HandleCreateARecipe:
+        tags: [ 'messenger.message_handler' ]
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+
+        Recipe\Domain\UseCase\Recipe\Get\GetARecipeService: ~

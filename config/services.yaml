@@ -1,6 +1,40 @@
+imports:
+    - { resource: domain.yaml }
+
 parameters:
+    outbox_table_name: 'outbox_messages'
 
 services:
     _defaults:
         autowire: true
         autoconfigure: true
+
+    Recipe\Infrastructure\Bus\MessengerCommandBus: ~
+
+    Recipe\Infrastructure\Fixture\RecipeFixtures: ~
+
+    Recipe\Infrastructure\Persistence\Repository\RepositoryFactory: ~
+    Recipe\Infrastructure\Persistence\Repository\DbalOutboxRepository:
+        arguments:
+            $tableName: '%outbox_table_name%'
+    Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector: ~
+
+    Recipe\Infrastructure\Query\DbalRecipeReadModelRepository: ~
+
+    Ramsey\Uuid\UuidFactory: ~
+    Ramsey\Uuid\UuidFactoryInterface: '@Ramsey\Uuid\UuidFactory'
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+
+        Recipe\Domain\Bus\CommandBus:
+            alias: Recipe\Infrastructure\Bus\MessengerCommandBus
+
+        Ramsey\Uuid\UuidFactoryInterface:
+            alias: Ramsey\Uuid\UuidFactory
+
+        Recipe\Infrastructure\Projector\Recipe\GetARecipeOrmProjector: ~

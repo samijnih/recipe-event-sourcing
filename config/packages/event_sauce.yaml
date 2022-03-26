@@ -1,0 +1,57 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    EventSauce\EventSourcing\Serialization\ConstructingPayloadSerializer: ~
+    EventSauce\EventSourcing\Serialization\PayloadSerializer: '@EventSauce\EventSourcing\Serialization\ConstructingPayloadSerializer'
+
+    EventSauce\EventSourcing\Serialization\ConstructingMessageSerializer: ~
+    EventSauce\EventSourcing\Serialization\MessageSerializer: '@EventSauce\EventSourcing\Serialization\ConstructingMessageSerializer'
+
+    EventSauce\Clock\SystemClock: ~
+    EventSauce\Clock\Clock: '@EventSauce\Clock\SystemClock'
+
+    EventSauce\EventSourcing\DotSeparatedSnakeCaseInflector: ~
+    EventSauce\EventSourcing\ClassNameInflector: '@EventSauce\EventSourcing\DotSeparatedSnakeCaseInflector'
+
+    EventSauce\EventSourcing\SynchronousMessageDispatcher:
+        arguments:
+            - '@Recipe\Domain\Listener\Recipe\RecipeCreatedListener'
+
+    EventSauce\EventSourcing\MessageDecorator: '@EventSauce\EventSourcing\MessageDecoratorChain'
+
+    EventSauce\EventSourcing\DefaultHeadersDecorator: ~
+    EventSauce\EventSourcing\MessageDecoratorChain:
+        arguments:
+            - '@EventSauce\EventSourcing\DefaultHeadersDecorator'
+
+    EventSauce\EventSourcing\DecoratingMessageDispatcher:
+        arguments:
+            - '@EventSauce\EventSourcing\SynchronousMessageDispatcher'
+            - '@EventSauce\EventSourcing\MessageDecoratorChain'
+
+    EventSauce\EventSourcing\MessageDispatcherChain:
+        arguments:
+            - '@EventSauce\EventSourcing\DecoratingMessageDispatcher'
+
+    EventSauce\EventSourcing\MessageDispatcher: '@EventSauce\EventSourcing\MessageDispatcherChain'
+
+    EventSauce\MessageOutbox\OutboxRelay:
+        arguments:
+            - '@Recipe\Infrastructure\Persistence\Repository\DbalOutboxRepository'
+            - '@Recipe\Domain\Consumer\DispatchConsumedMessages'
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+
+        EventSauce\Clock\TestClock: ~
+        EventSauce\Clock\Clock: '@EventSauce\Clock\TestClock'
+        EventSauce\MessageOutbox\OutboxRelay:
+            arguments:
+                - '@Recipe\Infrastructure\Persistence\Repository\DbalOutboxRepository'
+                - '@Recipe\Domain\Consumer\DispatchConsumedMessages'
